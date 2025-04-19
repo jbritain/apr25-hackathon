@@ -43,7 +43,6 @@ function initDB(db){
                 questionNumber INTEGER NOT NULL,
                 questionPicture BLOB NOT NULL,
                 questionText TEXT NOT NULL,
-                isCorrect BOOLEAN NOT NULL,
                 exerciseID TEXT NOT NULL,
                 FOREIGN KEY (exerciseID) REFERENCES exercise(exerciseID)
             )`
