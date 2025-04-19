@@ -2,7 +2,8 @@ function initDB(db){
     db.serialize(() => {
       db.run(`
           CREATE TABLE IF NOT EXISTS user (
-              name TEXT NOT NULL UNIQUE,
+              name TEXT NOT NULL,
+              userID TEXT NOT NULL PRIMARY KEY,
               isTeacher BOOLEAN NOT NULL,
               password TEXT NOT NULL
           )`
@@ -11,7 +12,7 @@ function initDB(db){
         db.run(`
             CREATE TABLE IF NOT EXISTS class (
                 className TEXT NOT NULL,
-                classCode INTEGER NOT NULL
+                classCode INTEGER NOT NULL PRIMARK KEY
             )`
           )
 
