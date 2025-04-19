@@ -24,7 +24,7 @@ var env = nunjucks.configure("views", {
 
 app.get("/", verifyToken, (req, res) => {
     try {
-        res.render("pages/index.njk");
+        res.render("pages/index.njk", {user: req.user});
     } catch(e) {
         console.error(e);
     }
