@@ -1,16 +1,40 @@
 {% extends "templates/default.njk" %}
 
 {% block content %}
-<form action="/auth/register" method="POST">
-    <input required type="text" name="name" placeholder="Name">
-    <input required type="password" name="password" placeholder="Password">
-    <input type="checkbox" name="isTeacher" value="true"> I am a teacher
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h3 class="card-title text-center mb-4">Register</h3>
 
-    <input type="submit" value="Register">
-</form>
+                <form action="/auth/register" method="POST">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input required type="text" name="name" id="name" class="form-control" placeholder="Enter your name">
+                    </div>
 
-{% if error %}
-    <p class="error">{{ error }}</p>
-{% endif %}
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input required type="password" name="password" id="password" class="form-control" placeholder="Create a password">
+                    </div>
 
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" name="isTeacher" id="isTeacher" value="true">
+                        <label class="form-check-label" for="isTeacher">
+                            I am a teacher
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Register</button>
+                </form>
+
+                {% if error %}
+                    <div class="alert alert-danger mt-3" role="alert">
+                        {{ error }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
