@@ -1,6 +1,6 @@
 const { generateToken } = require("../middleware/auth.js")
 
-module.exports = function(app, db){
+module.exports = function (app, db) {
     app.post("/auth/register", (req, res) => {
         console.log(req.body);
         const name = req.body.name;
@@ -46,5 +46,10 @@ module.exports = function(app, db){
                 }
             });
         });
-    })
+    });
+
+    app.get("/auth/logout", (req, res) => {
+        res.clearCookie('token');
+        res.redirect('/auth/login');
+    });
 }

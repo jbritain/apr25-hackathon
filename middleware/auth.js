@@ -2,17 +2,19 @@ const jwt = require('jsonwebtoken');
 
 const privKey = "TODO-CHANGE-ME-PLEASE";
 
-function generateToken(userID){
-    return jwt.sign({ userID: userID }, privKey);
+function generateToken(userID, name, isTeacher){
+    return jwt.sign({ userID: userID, name: name, isTeacher: isTeacher }, privKey);
 }
 
 function verifyToken(req, res, next){
     let token = req.cookies.token;
     try {
         let decoded = jwt.verify(token, privKey);
-        req.userID = decoded.userID;
-        req.name = decoded.name;
-        req.isTeacher = decoded.isTeacher;
+        req.user = {
+            id: decoded.userID,
+            name: decoded.name,
+            email: decoded.email
+        }
         next();
     } catch(err) {
         res.redirect('/auth/login');
