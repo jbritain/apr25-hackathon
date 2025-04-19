@@ -1,0 +1,26 @@
+{
+  "name": "apr25-hackathon",
+  "version": "1.0.0",
+  "description": "At Aberbean University, engagement in tutorial/workshop classes is low. Students often do not complete their assigned work, and since tutorial problems are distributed as PDFs, instructors have no visibility into student progress or struggles. Without an interactive system, students lack motivation, and educators cannot provide targeted support.",
+  "main": "index.js",
+  "scripts": {
+      "dev": "nodemon -e js,html,njk,json,md ./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jbritain/apr25-hackathon.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jbritain/apr25-hackathon/issues"
+  },
+  "homepage": "https://github.com/jbritain/apr25-hackathon#readme",
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "marked": "^15.0.8",
+    "nodemon": "^3.1.9",
+    "nunjucks": "^3.2.4"
+  }
+}
