@@ -22,6 +22,15 @@ app.get("/", (req, res) => {
     }
 })
 
+uni.serialize(() => {
+  uni.run(`
+      CREATE TABLE IF NOT EXISTS user (
+          name TEXT NOT NULL,
+          isTeacher BOOLEAN NOT NULL,
+          password TEXT NOT NULL
+      )`
+)});
+
 app.listen(PORT || 8080, () => {
   console.log(`Listening at http://localhost:${PORT || 8080}`);
 })
