@@ -3,6 +3,7 @@ const nunjucks = require("nunjucks");
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database("./db.sqlite3");
 const { verifyToken, generateToken } = require('./middleware/auth');
+const initDB = require('./init-db.js');
 
 require('dotenv').config();
 const PORT = process.env.PORT;
@@ -23,14 +24,7 @@ app.get("/", (req, res) => {
     }
 })
 
-uni.serialize(() => {
-  uni.run(`
-      CREATE TABLE IF NOT EXISTS user (
-          name TEXT NOT NULL,
-          isTeacher BOOLEAN NOT NULL,
-          password TEXT NOT NULL
-      )`
-)});
+initDB(db);
 
 app.listen(PORT || 8080, () => {
   console.log(`Listening at http://localhost:${PORT || 8080}`);
