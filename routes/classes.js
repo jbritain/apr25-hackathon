@@ -34,4 +34,10 @@ module.exports = function (app, db) {
         await db.run("INSERT INTO user_class (userID, classCode) VALUES (?, ?)", [req.user.id, classCode]);
         res.redirect("/classes");
     });
+
+    app.post("/classes/join", verifyToken, async (req, res) => {
+        const classCode = req.body['class-code'];
+        await db.run("INSERT INTO user_class (userID, classCode) VALUES (?, ?)", [req.user.id, classCode]);
+        res.redirect("/classes");
+    });
 }
