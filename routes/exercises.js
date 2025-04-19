@@ -79,10 +79,10 @@ module.exports = function (app, db) {
                 console.error("Error fetching questions:", err);
                 return res.status(500).send("Database error");
             }
-            // Counter to track when all async operations are complete
-            let pendingQueries = questions.length * 2; // Doubled because we now have two queries per question
 
-            // If there are no questions, render the page immediately
+            // Three queries per question now: messages, current user's answer, all answers
+            let pendingQueries = questions.length * 3;
+
             if (pendingQueries === 0) {
                 return res.render("pages/exercise.njk", {
                     user: req.user,
@@ -91,58 +91,68 @@ module.exports = function (app, db) {
                 });
             }
 
-            // Process each question, its messages, and its answer
             questions.forEach(question => {
-                // Fetch messages for the question
-                db.all("SELECT m.*, u.name as username FROM message m LEFT JOIN user u ON m.userID = u.userID WHERE m.questionID = ?",
-                    [question.questionID], (err, messages) => {
-                    if (err) {
-                        console.error("Error fetching messages:", err);
-                        // Continue with empty messages array
-                        question.messages = [];
-                    } else {
-                        question.messages = messages;
+                // Fetch messages
+                db.all(
+                    "SELECT m.*, u.name as username FROM message m LEFT JOIN user u ON m.userID = u.userID WHERE m.questionID = ?",
+                    [question.questionID],
+                    (err, messages) => {
+                        question.messages = err ? [] : messages;
+                        if (err) console.error("Error fetching messages:", err);
+
+                        pendingQueries--;
+                        if (pendingQueries === 0) {
+                            res.render("pages/exercise.njk", {
+                                user: req.user,
+                                exercise: exerciseID,
+                                questions: questions
+                            });
+                        }
                     }
+                );
 
-                    // Decrement the counter
-                    pendingQueries--;
+                // Fetch current user's answer
+                db.get(
+                    "SELECT * FROM answer WHERE questionID = ? AND userID = ?",
+                    [question.questionID, req.user.id],
+                    (err, answer) => {
+                        question.answer = err ? null : answer;
+                        if (err) console.error("Error fetching user answer:", err);
 
-                    // When all queries are complete, render the response
-                    if (pendingQueries === 0) {
-                        res.render("pages/exercise.njk", {
-                            user: req.user,
-                            exercise: exerciseID,
-                            questions: questions
-                        });
+                        pendingQueries--;
+                        if (pendingQueries === 0) {
+                            res.render("pages/exercise.njk", {
+                                user: req.user,
+                                exercise: exerciseID,
+                                questions: questions
+                            });
+                        }
                     }
-                });
+                );
 
-                // Fetch the answer for the question matching the current user
-                db.get("SELECT * FROM answer WHERE questionID = ? AND userID = ?",
-                    [question.questionID, req.user.id], (err, answer) => {
-                    if (err) {
-                        console.error("Error fetching answer:", err);
-                        // Continue with no answer
-                        question.answer = null;
-                    } else {
-                        question.answer = answer;
+                // Fetch all answers for the question
+                // Fetch all answers for the question, along with user names
+                db.all(
+                    "SELECT a.*, u.name as username FROM answer a LEFT JOIN user u ON a.userID = u.userID WHERE a.questionID = ?",
+                    [question.questionID],
+                    (err, answers) => {
+                        question.answers = err ? [] : answers;
+                        if (err) console.error("Error fetching all answers with usernames:", err);
+
+                        pendingQueries--;
+                        if (pendingQueries === 0) {
+                            res.render("pages/exercise.njk", {
+                                user: req.user,
+                                exercise: exerciseID,
+                                questions: questions
+                            });
+                        }
                     }
-
-                    // Decrement the counter
-                    pendingQueries--;
-
-                    // When all queries are complete, render the response
-                    if (pendingQueries === 0) {
-                        res.render("pages/exercise.njk", {
-                            user: req.user,
-                            exercise: exerciseID,
-                            questions: questions
-                        });
-                    }
-                });
+                );
             });
         });
     });
+
 
     app.post("/exercises/:id/questions/add", verifyToken, function (req, res) {
         const exerciseID = req.params.id;
@@ -164,6 +174,28 @@ module.exports = function (app, db) {
         });
 
         res.redirect("/exercises/" + exerciseID + "/")
+    });
+
+    app.post("/exercises/:id/questions/markAnswer/:answerID", verifyToken, async function (req, res) {
+        const answerID = req.params.answerID;
+        const isCorrect = req.body.markCorrect;
+        console.log(isCorrect);
+
+        try {
+            await db.run("UPDATE answer SET (marked, isCorrect) = (?,?) WHERE answerID = ?", [true, isCorrect == "true", answerID], function(err) {
+                if (err) {
+                    console.error(err);
+                    res.status(500).send("Error marking answer");
+                }
+
+                res.redirect("/exercises/" + req.params.id + "/");
+            });
+        } catch(e) {
+            console.error(e);
+            res.status(500).send("Error marking answer");
+        }
+
+
     });
 
     app.post("/exercises/:id/questions/answer", verifyToken, async function (req, res) {

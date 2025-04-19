@@ -10,7 +10,48 @@
             {% if question.questionPicture %}
                 <img src="data:image/png;base64,{{ question.questionPicture }}" alt="Question Image">
             {% endif %}
+
+            {% if user.isTeacher %}
+            <h3>Answers</h3>
+
+            <ul>
+                {% for answer in question.answers %}
+                    <li>
+                        <div id="answerModal{{ answer.username}}" class="modal" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <h1>Answer by {{ answer.username }}</h1>
+                                    <p>{{ answer.answerText }}</p>
+                                    {% if answer.answerImage %}
+                                        <img src="data:image/png;base64,{{ answer.answerImage }}" alt="Answer Image">
+                                    {% endif %}
+                                    <form action="./questions/markAnswer/{{ answer.answerID }}" method="POST">
+                                        <input type="checkbox" name="markCorrect" value="true">Correct
+                                        <button type="submit" class="btn btn-primary">Mark</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <button data-bs-toggle="modal" data-bs-target="#answerModal{{ answer.username }}">{{ answer.username}}</button>
+
+                    </li>
+                {% endfor %}
+            </ul>
+            {% else %}
             <h3>Answer</h3>
+
+            {% if question.answer %}
+                {% if question.answer.marked %}
+                    {% if question.answer.isCorrect %}
+                        <p>Correct Answer</p>
+                    {% else %}
+                        <p>Incorrect Answer</p>
+                    {% endif %}
+                {% else %}
+                    <p>Please wait for the question to be marked.</p>
+                {% endif %}
+            {% endif %}
+
             <form action="./questions/answer" method="POST", enctype="multipart/form-data">
                 <input type="hidden" name="questionID" value="{{ question.questionID }}">
                 <textarea name="answerText" rows="4" cols="50">{{ question.answer.answerText }}</textarea>
@@ -20,6 +61,7 @@
                 <input type="file" name="file" accept="image/png">
                 <button type="submit">Submit Answer</button>
             </form>
+            {% endif %}
             <h3>Chat</h3>
             {% for message in question.messages %}
                 <p>{{message.dateTime}}: {{ message.username }}: {{ message.content }}</p>
