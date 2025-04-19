@@ -5,7 +5,11 @@
 
 <ul class="list-group mb-4">
     {% for exercise in exercises %}
-        <li><a href="/exercises/{{ exercise.exerciseID }}/">{{ exercise.name }}</a></li>
+        <li class="list-group-item list-group-item-action">
+            <a href="/exercises/{{ exercise.exerciseID }}/" class="text-decoration-none text-dark d-block">
+                {{ exercise.name }}
+            </a>
+        </li>
     {% endfor %}
 </ul>
 
