@@ -2,6 +2,7 @@ const express = require("express");
 const nunjucks = require("nunjucks");
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database("./db.sqlite3");
+const { verifyToken, generateToken } = require('./middleware/auth');
 
 require('dotenv').config();
 const PORT = process.env.PORT;
