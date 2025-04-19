@@ -44,7 +44,13 @@ function initDB(db){
             CREATE TABLE IF NOT EXISTS message (
                 content TEXT NOT NULL,
                 dateTime DATETIME NOT NULL
-            )`
+            )`, (err) => {
+              if (err) { 
+                console.error("Error creating table:", err.message);
+              } else {
+                console.log("All tables created successfully");
+              }
+            }
           )
     });
 }
