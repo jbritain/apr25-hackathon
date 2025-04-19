@@ -11,6 +11,9 @@
     {% if user %}
         <p>{{ user.name }}</p>
         <a href="/auth/logout">Logout</a>
+        {% if user.isTeacher %}
+            <p>You are a teacher</p>
+        {% endif %}
     {% endif %}
 
     {% block content %}{% endblock %}

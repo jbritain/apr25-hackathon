@@ -1,3 +1,5 @@
+const { verifyToken } = require('../middleware/auth.js');
+
 module.exports = function (app, db) {
     // we need routes to
     // - create exercise
@@ -5,17 +7,18 @@ module.exports = function (app, db) {
     // - delete exercise
     // - list exercises
 
-    app.get("/exercises", function(req, res) {
+    app.get("/exercises", verifyToken, function(req, res) {
         res.render("pages/exercises.njk", {
             exercises: [
                 { name: "Exercise 1", id: 1 },
                 { name: "Exercise 2", id: 2 },
                 { name: "Exercise 3", id: 3 }
-            ]
+            ],
+            user: req.user
         });
     });
 
-    app.get("/exercises/:id", function(req, res) {
+    app.get("/exercises/:id", verifyToken, function(req, res) {
         const exerciseId = req.params.id;
         const exercise = {
             name: "Exercise 1"
@@ -26,7 +29,7 @@ module.exports = function (app, db) {
                 questionText: "Placeholder question",
             }
         ]
-        res.render("pages/exercise.njk", { exercise, questions });
+        res.render("pages/exercise.njk", {user:req.user, exercise, questions });
     });
 
 }

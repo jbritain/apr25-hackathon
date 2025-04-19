@@ -1,0 +1,22 @@
+{% extends "templates/default.njk" %}
+
+{% block content %}
+    <h1>Classes</h1>
+    <h2>My Classes</h2>
+    <ul>
+
+    </ul>
+
+    {% if user.isTeacher %}
+        <button>Create Class</button>
+
+        <div class="modal" id="create-class-modal">
+            <h2>Create Class</h2>
+            <form action="/classes/create">
+                <label for="class-name">Class Name:</label>
+                <input type="text" id="class-name" name="class-name">
+                <button type="submit">Create</button>
+            </form>
+        </div>
+    {% endif %}
+{% endblock %}
