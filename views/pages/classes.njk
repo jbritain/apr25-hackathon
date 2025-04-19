@@ -7,9 +7,9 @@
 <ul class="list-group mb-4">
     {% for class in classes %}
         <li class="list-group-item d-flex justify-content-between align-items-center">
-            <a href="/classes/{{ class.classCode }}" class="text-decoration-none">
+            <span>
                 {{ class.className }} ({{ class.classCode }})
-            </a>
+            </span>
         </li>
     {% endfor %}
 </ul>
