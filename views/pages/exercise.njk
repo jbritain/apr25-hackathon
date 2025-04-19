@@ -10,10 +10,15 @@
             {% if question.questionPicture %}
                 <img src="data:image/png;base64,{{ question.questionPicture }}" alt="Question Image">
             {% endif %}
-            <form>
-                <h3>submit answer</h3>
-                <textarea name="answer" rows="4" cols="50"></textarea>
-                <input type="file" name="image" accept="image/png">
+            <h3>Answer</h3>
+            <form action="./questions/answer" method="POST", enctype="multipart/form-data">
+                <input type="hidden" name="questionID" value="{{ question.questionID }}">
+                <textarea name="answerText" rows="4" cols="50">{{ question.answer.answerText }}</textarea>
+                {% if question.answer.answerImage %}
+                    <img src="data:image/png;base64,{{ question.answer.answerImage }}" alt="Answer Image">
+                {% endif %}
+                <input type="file" name="file" accept="image/png">
+                <button type="submit">Submit Answer</button>
             </form>
             <h3>Chat</h3>
             {% for message in question.messages %}
