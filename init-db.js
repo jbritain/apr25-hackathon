@@ -17,6 +17,16 @@ function initDB(db){
           )
 
         db.run(`
+            CREATE TABLE IF NOT EXISTS user_class (
+                userID TEXT NOT NULL,
+                classCode INTEGER NOT NULL,
+                PRIMARY KEY (userID, classCode),
+                FOREIGN KEY (userID) REFERENCES user(userID),
+                FOREIGN KEY (classCode) REFERENCES class(classCode)
+            )`
+        )
+        
+        db.run(`
             CREATE TABLE IF NOT EXISTS excercise (
                 name TEXT NOT NULL,
                 incentive TEXT NOT NULL,
