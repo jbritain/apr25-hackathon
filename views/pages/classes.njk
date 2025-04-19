@@ -4,19 +4,27 @@
     <h1>Classes</h1>
     <h2>My Classes</h2>
     <ul>
-
+    {% for class in classes %}
+        <li><a href="/classes/{{ class.classCode }}">{{ class.className }} ({{ class.classCode }})</a></li>
+    {% endfor %}
     </ul>
 
     {% if user.isTeacher %}
-        <button>Create Class</button>
+        <button data-bs-toggle="modal" data-bs-target="#create-class-modal">Create Class</button>
 
         <div class="modal" id="create-class-modal">
-            <h2>Create Class</h2>
-            <form action="/classes/create">
-                <label for="class-name">Class Name:</label>
-                <input type="text" id="class-name" name="class-name">
-                <button type="submit">Create</button>
-            </form>
+          <div class="modal-dialog">
+            <div class="modal-content">
+                <h2>Create Class</h2>
+                <form action="/classes/create" method="post">
+                    <label for="class-name">Class Name:</label>
+                    <input type="text" id="class-name" name="class-name">
+                    <label for="class-code">Class Code:</label>
+                    <input type="number" id="class-code" name="class-code">
+                    <button type="submit">Create</button>
+                </form>
+            </div>
+        </div>
         </div>
     {% endif %}
 {% endblock %}

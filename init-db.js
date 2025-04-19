@@ -3,7 +3,7 @@ function initDB(db){
       db.run(`
           CREATE TABLE IF NOT EXISTS user (
               name TEXT NOT NULL,
-              userID TEXT NOT NULL PRIMARY KEY,
+              userID INTEGER PRIMARY KEY,
               isTeacher BOOLEAN NOT NULL,
               password TEXT NOT NULL
           )`
@@ -18,14 +18,14 @@ function initDB(db){
 
         db.run(`
             CREATE TABLE IF NOT EXISTS user_class (
-                userID TEXT NOT NULL,
+                userID INTEGER NOT NULL,
                 classCode INTEGER NOT NULL,
                 PRIMARY KEY (userID, classCode),
                 FOREIGN KEY (userID) REFERENCES user(userID),
                 FOREIGN KEY (classCode) REFERENCES class(classCode)
             )`
         )
-        
+
         db.run(`
             CREATE TABLE IF NOT EXISTS exercise (
                 exerciseID TEXT NOT NULL PRIMARY KEY,
