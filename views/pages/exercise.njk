@@ -1,0 +1,20 @@
+{% extends "templates/default.njk" %}
+
+{% block content %}
+    <h1>{{ exercise.name }}</h1>
+
+    <ol>
+    {% for question in questions %}
+        <li value="{{ question.questionNumber }}">
+            <h2>{{ question.questionText }}</h2>
+            {% if question.questionImage %}
+                <img src="data:image/png;base64,{{ question.questionImage }}" alt="Question Image">
+            {% endif %}
+            <form>
+                <textarea name="answer" rows="4" cols="50"></textarea>
+                <input type="file" name="image" accept="image/png">
+            </form>
+        </li>
+    {% endfor %}
+    </ol>
+{% endblock %}

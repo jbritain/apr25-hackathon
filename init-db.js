@@ -12,7 +12,7 @@ function initDB(db){
         db.run(`
             CREATE TABLE IF NOT EXISTS class (
                 className TEXT NOT NULL,
-                classCode INTEGER NOT NULL PRIMARK KEY
+                classCode INTEGER NOT NULL PRIMARY KEY
             )`
           )
 
@@ -46,7 +46,7 @@ function initDB(db){
                 content TEXT NOT NULL,
                 dateTime DATETIME NOT NULL
             )`, (err) => {
-              if (err) { 
+              if (err) {
                 console.error("Error creating table:", err.message);
               } else {
                 console.log("All tables created successfully");

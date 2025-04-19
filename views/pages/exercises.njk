@@ -1,0 +1,11 @@
+{% extends "templates/default.njk" %}
+
+{% block content %}
+<h1>Exercises</h1>
+
+<ul>
+    {% for exercise in exercises %}
+        <li><a href="/exercises/{{ exercise.id }}">{{ exercise.name }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,3 +1,5 @@
+{% extends "templates/default.njk" %}
+
 {% block content %}
 <form action="/auth/login" method="POST">
     <input required type="text" name="name" placeholder="Name">
