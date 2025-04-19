@@ -72,17 +72,19 @@ module.exports = function (app, db) {
     })
 
     app.get("/exercises/:id", verifyToken, function(req, res) {
-        const exerciseId = req.params.id;
-        const exercise = {
-            name: "Exercise 1"
-        };
-        const questions = [
-            {
-                questionNumber: 1,
-                questionText: "Placeholder question",
-            }
-        ]
-        res.render("pages/exercise.njk", {user:req.user, exercise, questions });
+        const exerciseID = req.params.id;
+
+        db.all("SELECT * FROM question;", [], (err, questions) => {
+            
+            res.render("pages/exercise.njk", {
+                user:req.user,
+                exercise: exerciseID,
+                questions: questions
+            });
+
+            console.log(questions);
+        });
+
     });
 
 }
