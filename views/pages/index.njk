@@ -1,5 +1,35 @@
 {% extends "templates/default.njk" %}
 
 {% block content %}
-<h1>Hello World</h1>
+<div class="text-center my-5">
+    <h1 class="mb-4">Welcome, {{ user.name }}!</h1>
+    
+    {% if user.isTeacher %}
+        <p class="text-muted">You're logged in as a <strong>Teacher</strong>.</p>
+    {% else %}
+        <p class="text-muted">You're logged in as a <strong>Student</strong>.</p>
+    {% endif %}
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-5 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">Exercises</h5>
+                <p class="card-text">View exercises assigned to students.</p>
+                <a href="/exercises" class="btn btn-primary">Go to Exercises</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">Classes</h5>
+                <p class="card-text">Join a class or manage your class if you're a teacher.</p>
+                <a href="/classes" class="btn btn-secondary">View Classes</a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
