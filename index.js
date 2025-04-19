@@ -16,6 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //app.use(cookieParser());
 
 require('./routes/auth.js')(app, db);
+require('./routes/exercises.js')(app, db);
 
 var env = nunjucks.configure("views", {
   autoescape: true,

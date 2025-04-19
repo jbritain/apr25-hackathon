@@ -72,7 +72,7 @@ function initDB(db){
                 FOREIGN KEY (userID) REFERENCES user(userID),
                 FOREIGN KEY (questionID) REFERENCES question(questionID)
             )`, (err) => {
-              if (err) { 
+              if (err) {
                 console.error("Error creating table:", err.message);
               } else {
                 console.log("All tables created successfully");
