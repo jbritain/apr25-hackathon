@@ -12,12 +12,13 @@ function initDB(db){
         db.run(`
             CREATE TABLE IF NOT EXISTS class (
                 className TEXT NOT NULL,
-                classCode INTEGER NOT NULL PRIMARK KEY
+                classCode INTEGER NOT NULL PRIMARY KEY
             )`
           )
 
         db.run(`
             CREATE TABLE IF NOT EXISTS exercise (
+
                 name TEXT NOT NULL,
                 incentive TEXT NOT NULL,
                 pointValue INTEGER NOT NULL
