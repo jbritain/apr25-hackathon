@@ -13,7 +13,7 @@ function verifyToken(req, res, next){
         req.user = {
             id: decoded.userID,
             name: decoded.name,
-            email: decoded.email
+            isTeacher: decoded.isTeacher
         }
         next();
     } catch(err) {
