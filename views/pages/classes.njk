@@ -1,44 +1,75 @@
 {% extends "templates/default.njk" %}
 
 {% block content %}
-    <h1>Classes</h1>
-    <h2>My Classes</h2>
-    <ul>
+<h1 class="mb-4">Classes</h1>
+
+<h2 class="mb-3">My Classes</h2>
+<ul class="list-group mb-4">
     {% for class in classes %}
-        <li><a href="/classes/{{ class.classCode }}">{{ class.className }} ({{ class.classCode }})</a></li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a href="/classes/{{ class.classCode }}" class="text-decoration-none">
+                {{ class.className }} ({{ class.classCode }})
+            </a>
+        </li>
     {% endfor %}
-    </ul>
+</ul>
 
+<div class="d-flex flex-wrap gap-2 mb-5">
     {% if user.isTeacher %}
-        <button data-bs-toggle="modal" data-bs-target="#create-class-modal">Create Class</button>
-
-        <div class="modal" id="create-class-modal">
-          <div class="modal-dialog">
-            <div class="modal-content">
-                <h2>Create Class</h2>
-                <form action="/classes/create" method="post">
-                    <label for="class-name">Class Name:</label>
-                    <input type="text" id="class-name" name="class-name">
-                    <label for="class-code">Class Code:</label>
-                    <input type="number" id="class-code" name="class-code">
-                    <button type="submit">Create</button>
-                </form>
-            </div>
-        </div>
-        </div>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#create-class-modal">Create Class</button>
     {% endif %}
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#join-class-modal">Join Class</button>
+</div>
 
-    <button data-bs-toggle="modal" data-bs-target="#join-class-modal">Join Class</button>
-    <div class="modal" id="join-class-modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <h2>Join Class</h2>
-                <form action="/classes/join" method="post">
-                    <label for="class-code">Class Code:</label>
-                    <input type="number" id="class-code" name="class-code">
-                    <button type="submit">Join</button>
-                </form>
-            </div>
+{% if user.isTeacher %}
+<!-- Create Class Modal -->
+<div class="modal fade" id="create-class-modal" tabindex="-1" aria-labelledby="createClassLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="/classes/create" method="post">
+        <div class="modal-header">
+          <h5 class="modal-title" id="createClassLabel">Create Class</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="class-name" class="form-label">Class Name</label>
+            <input type="text" id="class-name" name="class-name" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="class-code" class="form-label">Class Code</label>
+            <input type="number" id="class-code" name="class-code" class="form-control" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+      </form>
     </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Join Class Modal -->
+<div class="modal fade" id="join-class-modal" tabindex="-1" aria-labelledby="joinClassLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="/classes/join" method="post">
+        <div class="modal-header">
+          <h5 class="modal-title" id="joinClassLabel">Join Class</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="class-code" class="form-label">Class Code</label>
+            <input type="number" id="class-code" name="class-code" class="form-control" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Join</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}
