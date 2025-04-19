@@ -7,8 +7,8 @@
     {% for question in questions %}
         <li value="{{ question.questionNumber }}">
             <h2>{{ question.questionText }}</h2>
-            {% if question.questionImage %}
-                <img src="data:image/png;base64,{{ question.questionImage }}" alt="Question Image">
+            {% if question.questionPicture %}
+                <img src="data:image/png;base64,{{ question.questionPicture }}" alt="Question Image">
             {% endif %}
             <form>
                 <textarea name="answer" rows="4" cols="50"></textarea>
@@ -17,4 +17,16 @@
         </li>
     {% endfor %}
     </ol>
+
+    {% if user.isTeacher %}
+        <li>
+            <h2>Add a new question</h2>
+            <form action="./questions/add" method="POST", enctype="multipart/form-data">
+                <input type="text" name="questionText" placeholder="Question text">
+                <input type="number" name="questionNumber" placeholder="Question number">
+                <input type="file" name="questionImage" accept="image/png">
+                <button type="submit">Add Question</button>
+            </form>
+        </li>
+    {% endif %}
 {% endblock %}

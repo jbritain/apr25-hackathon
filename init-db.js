@@ -41,7 +41,7 @@ function initDB(db){
             CREATE TABLE IF NOT EXISTS question (
                 questionID INTEGER PRIMARY KEY,
                 questionNumber INTEGER NOT NULL,
-                questionPicture BLOB NOT NULL,
+                questionPicture BLOB,
                 questionText TEXT NOT NULL,
                 isCorrect BOOLEAN NOT NULL,
                 exerciseID INTEGER NOT NULL,

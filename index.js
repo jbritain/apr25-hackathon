@@ -9,11 +9,20 @@ const cookieParser = require('cookie-parser');
 
 require('dotenv').config();
 const PORT = process.env.PORT;
+const fileUpload = require('express-fileupload');
 
 var app = express();
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(fileUpload({
+  // Configure file uploads with maximum file size 10MB
+  limits: { fileSize: 10 * 1024 * 1024 },
+
+  // Temporarily store uploaded files to disk, rather than buffering in memory
+  useTempFiles : true,
+  tempFileDir : '/tmp/'
+}));
 
 require('./routes/auth.js')(app, db);
 require('./routes/exercises.js')(app, db);
