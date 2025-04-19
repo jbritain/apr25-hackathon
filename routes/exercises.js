@@ -72,16 +72,50 @@ module.exports = function (app, db) {
             }
         });
     })
-
     app.get("/exercises/:id", verifyToken, function(req, res) {
         const exerciseID = req.params.id;
+        db.all("SELECT * FROM question WHERE exerciseID = ?", [exerciseID], (err, questions) => {
+            if (err) {
+                console.error("Error fetching questions:", err);
+                return res.status(500).send("Database error");
+            }
 
-        db.all("SELECT * FROM question;", [], (err, questions) => {
+            // Counter to track when all async operations are complete
+            let pendingQueries = questions.length;
 
-            res.render("pages/exercise.njk", {
-                user:req.user,
-                exercise: exerciseID,
-                questions: questions
+            // If there are no questions, render the page immediately
+            if (pendingQueries === 0) {
+                return res.render("pages/exercise.njk", {
+                    user: req.user,
+                    exercise: exerciseID,
+                    questions: questions
+                });
+            }
+
+            // Process each question and its messages
+            questions.forEach(question => {
+                db.all("SELECT m.*, u.name as username FROM message m LEFT JOIN user u ON m.userID = u.userID WHERE m.questionID = ?",
+                    [question.questionID], (err, messages) => {
+                    if (err) {
+                        console.error("Error fetching messages:", err);
+                        // Continue with empty messages array
+                        question.messages = [];
+                    } else {
+                        question.messages = messages;
+                    }
+
+                    // Decrement the counter
+                    pendingQueries--;
+
+                    // When all queries are complete, render the response
+                    if (pendingQueries === 0) {
+                        res.render("pages/exercise.njk", {
+                            user: req.user,
+                            exercise: exerciseID,
+                            questions: questions
+                        });
+                    }
+                });
             });
         });
     });
@@ -105,6 +139,21 @@ module.exports = function (app, db) {
         });
 
         res.redirect("/exercises/" + exerciseID + "/")
+    })
+
+    app.post("/exercises/:id/messages/add", verifyToken, function(req, res) {
+        const questionID = req.body.questionID;
+        const messageText = req.body.newMessage;
+        const messageDateTime = new Date().toISOString();
+
+        db.run("INSERT INTO message (questionID, content, userID, dateTime) VALUES (?, ?, ?, ?)", [questionID, messageText, req.user.id, messageDateTime], function(err) {
+            if (err) {
+                console.error(err);
+                res.status(500).send("Error creating message");
+            }
+        });
+
+        res.redirect("/exercises/" + req.params.id + "/")
     })
 
 }

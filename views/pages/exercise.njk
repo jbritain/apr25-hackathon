@@ -11,10 +11,22 @@
                 <img src="data:image/png;base64,{{ question.questionPicture }}" alt="Question Image">
             {% endif %}
             <form>
+                <h3>submit answer</h3>
                 <textarea name="answer" rows="4" cols="50"></textarea>
                 <input type="file" name="image" accept="image/png">
             </form>
+            <h3>Chat</h3>
+            {% for message in question.messages %}
+                <p>{{message.dateTime}}: {{ message.username }}: {{ message.content }}</p>
+            {% endfor %}
+            <form action="./messages/add" method="POST">
+                <input type="hidden" name="questionID" value="{{ question.questionID }}">
+                <textarea name="newMessage" rows="4" cols="50"></textarea>
+                <button type="submit">Send Message</button>
+            </form>
+
         </li>
+
     {% endfor %}
     </ol>
 
