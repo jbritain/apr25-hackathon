@@ -17,7 +17,7 @@ function initDB(db){
           )
 
         db.run(`
-            CREATE TABLE IF NOT EXISTS excercise (
+            CREATE TABLE IF NOT EXISTS exercise (
                 name TEXT NOT NULL,
                 incentive TEXT NOT NULL,
                 pointValue INTEGER NOT NULL
