@@ -79,9 +79,8 @@ module.exports = function (app, db) {
                 console.error("Error fetching questions:", err);
                 return res.status(500).send("Database error");
             }
-
             // Counter to track when all async operations are complete
-            let pendingQueries = questions.length;
+            let pendingQueries = questions.length * 2; // Doubled because we now have two queries per question
 
             // If there are no questions, render the page immediately
             if (pendingQueries === 0) {
@@ -92,8 +91,9 @@ module.exports = function (app, db) {
                 });
             }
 
-            // Process each question and its messages
+            // Process each question, its messages, and its answer
             questions.forEach(question => {
+                // Fetch messages for the question
                 db.all("SELECT m.*, u.name as username FROM message m LEFT JOIN user u ON m.userID = u.userID WHERE m.questionID = ?",
                     [question.questionID], (err, messages) => {
                     if (err) {
@@ -116,22 +116,47 @@ module.exports = function (app, db) {
                         });
                     }
                 });
+
+                // Fetch the answer for the question matching the current user
+                db.get("SELECT * FROM answer WHERE questionID = ? AND userID = ?",
+                    [question.questionID, req.user.id], (err, answer) => {
+                    if (err) {
+                        console.error("Error fetching answer:", err);
+                        // Continue with no answer
+                        question.answer = null;
+                    } else {
+                        question.answer = answer;
+                    }
+
+                    // Decrement the counter
+                    pendingQueries--;
+
+                    // When all queries are complete, render the response
+                    if (pendingQueries === 0) {
+                        res.render("pages/exercise.njk", {
+                            user: req.user,
+                            exercise: exerciseID,
+                            questions: questions
+                        });
+                    }
+                });
             });
         });
     });
 
-    app.post("/exercises/:id/questions/add", verifyToken, function(req, res) {
+    app.post("/exercises/:id/questions/add", verifyToken, function (req, res) {
         const exerciseID = req.params.id;
         const questionText = req.body.questionText;
         const questionNumber = req.body.questionNumber;
 
         let questionBlob = "";
 
-        if(req.files.questionImage){
-            questionBlob = fs.readFileSync(req.files.questionImage.tempFilePath, {encoding: 'base64'});
+        try{
+            questionBlob = fs.readFileSync(req.files.questionImage.tempFilePath, { encoding: 'base64' });
+        } catch(e){
         }
 
-        db.run("INSERT INTO question (exerciseID, questionText, questionPicture, questionNumber, isCorrect) VALUES (?, ?, ?, ?, ?)", [exerciseID, questionText, questionBlob, questionNumber, true], function(err) {
+        db.run("INSERT INTO question (exerciseID, questionText, questionPicture, questionNumber, isCorrect) VALUES (?, ?, ?, ?, ?)", [exerciseID, questionText, questionBlob, questionNumber, true], function (err) {
             if (err) {
                 console.error(err);
                 res.status(500).send("Error creating question");
@@ -139,7 +164,33 @@ module.exports = function (app, db) {
         });
 
         res.redirect("/exercises/" + exerciseID + "/")
-    })
+    });
+
+    app.post("/exercises/:id/questions/answer", verifyToken, async function (req, res) {
+        const questionID = req.body.questionID;
+        const answerText = req.body.answerText;
+        let imageBlob = "";
+
+        if(req.files)
+            imageBlob = fs.readFileSync(req.files.file.tempFilePath, { encoding: 'base64' });
+
+
+
+        await db.run("DELETE FROM answer WHERE userID = ? AND questionID = ?", [req.user.id, questionID], function(err) {
+            if (err) {
+                console.error(err);
+            }
+        });
+
+        await db.run("INSERT INTO answer (userID, questionID, answerText, answerImage, isCorrect, marked) VALUES (?, ?, ?, ?, ?, ?)", [req.user.id, questionID, answerText, imageBlob, true, false], function(err) {
+            if (err) {
+                console.error(err);
+            }
+        });
+
+        res.redirect("/exercises/" + req.params.id + "/");
+
+    });
 
     app.post("/exercises/:id/messages/add", verifyToken, function(req, res) {
         const questionID = req.body.questionID;

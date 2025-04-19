@@ -52,9 +52,10 @@ function initDB(db){
         db.run(`
             CREATE TABLE IF NOT EXISTS answer (
                 answerID INTEGER PRIMARY KEY,
-                answerImage BLOB NOT NULL,
+                answerImage BLOB,
                 answerText TEXT NOT NULL,
                 isCorrect BOOLEAN NOT NULL,
+                marked BOOLEAN NOT NULL,
                 userID INTEGER NOT NULL,
                 questionID INTEGER NOT NULL,
                 FOREIGN KEY (userID) REFERENCES user(userID),
