@@ -5,7 +5,7 @@ const db = new sqlite3.Database("./db.sqlite3");
 const { verifyToken, generateToken } = require('./middleware/auth');
 const initDB = require('./init-db.js');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
+//const cookieParser = require('cookie-parser');
 
 require('dotenv').config();
 const PORT = process.env.PORT;
@@ -13,7 +13,7 @@ const PORT = process.env.PORT;
 var app = express();
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
+//app.use(cookieParser());
 
 require('./routes/auth.js')(app, db);
 
