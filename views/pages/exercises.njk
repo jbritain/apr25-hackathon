@@ -1,42 +1,65 @@
 {% extends "templates/default.njk" %}
 
 {% block content %}
-<h1>Exercises</h1>
+<h1 class="mb-4">Exercises</h1>
 
-<ul>
+<ul class="list-group mb-4">
     {% for exercise in exercises %}
-        <li><a href="/exercises/{{ exercise.exerciseID }}">{{ exercise.name }}</a></li>
+        <li class="list-group-item">
+            <a href="/exercises/{{ exercise.exerciseID }}" class="text-decoration-none">
+                {{ exercise.name }}
+            </a>
+        </li>
     {% endfor %}
 </ul>
 
 {% if user.isTeacher %}
-    <button data-bs-toggle="modal" data-bs-target="#create-exercise-modal">Create Exercise</button>
-    <div class="modal" id="create-exercise-modal">
+    <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#create-exercise-modal">
+        Create Exercise
+    </button>
+
+    <!-- Create Exercise Modal -->
+    <div class="modal fade" id="create-exercise-modal" tabindex="-1" aria-labelledby="createExerciseLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <h2>Create Exercise</h2>
                 <form action="/exercises/create" method="post">
-                    <label for="name">Name:</label>
-                    <input type="text" id="name" name="name">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createExerciseLabel">Create Exercise</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
 
-                    <label for="incentive">Incentive:</label>
-                    <input type="text" id="incentive" name="incentive">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Exercise Name</label>
+                            <input type="text" id="name" name="name" class="form-control" required>
+                        </div>
 
-                    <label for="pointValue">Point Value:</label>
-                    <input type="number" id="pointValue" name="pointValue">
+                        <div class="mb-3">
+                            <label for="incentive" class="form-label">Incentive</label>
+                            <input type="text" id="incentive" name="incentive" class="form-control">
+                        </div>
 
-                    <label for="classCode">Class Code:</label>
-                    <select id="classCode" name="classCode">
-                        {% for class in classes %}
-                            <option value="{{ class.classCode }}">{{ class.className }}</option>
-                        {% endfor %}
-                    </select>
+                        <div class="mb-3">
+                            <label for="pointValue" class="form-label">Point Value</label>
+                            <input type="number" id="pointValue" name="pointValue" class="form-control" min="0">
+                        </div>
 
-                    <button type="submit">Create</button>
+                        <div class="mb-3">
+                            <label for="classCode" class="form-label">Assign to Class</label>
+                            <select id="classCode" name="classCode" class="form-select" required>
+                                {% for class in classes %}
+                                    <option value="{{ class.classCode }}">{{ class.className }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Create</button>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
 {% endif %}
-
 {% endblock %}
