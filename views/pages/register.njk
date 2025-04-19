@@ -1,0 +1,14 @@
+{% block content %}
+<form action="/auth/register" method="POST">
+    <input required type="text" name="name" placeholder="Name">
+    <input required type="password" name="password" placeholder="Password">
+    <input type="checkbox" name="isTeacher" value="true"> I am a teacher
+
+    <input type="submit" value="Register">
+</form>
+
+{% if error %}
+    <p class="error">{{ error }}</p>
+{% endif %}
+
+{% endblock %}

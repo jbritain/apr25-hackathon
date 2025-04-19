@@ -1,8 +1,12 @@
 {% block content %}
-<form>
-    <input required type="text" name="username" placeholder="Username">
-    <input required type="password" name="password" placeholder="Password">
+<form action="/auth/login" method="POST">
+    <input required type="text" name="name" placeholder="Name">
+    <input type="password" name="password" placeholder="Password">
 
     <input type="submit" value="Login">
 </form>
+
+{% if error %}
+    <p class="error">{{ error }}</p>
+{% endif %}
 {% endblock %}
