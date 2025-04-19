@@ -40,7 +40,7 @@ module.exports = function(app, db){
                 } else if (row.password !== password) {
                     res.render("pages/login.njk", { error: 'Incorrect password' });
                 } else {
-                    const token = generateToken(row.id);
+                    const token = generateToken(row.id, row.name, row.isTeacher);
                     res.cookie('token', token, { httpOnly: true });
                     res.redirect('/');
                 }

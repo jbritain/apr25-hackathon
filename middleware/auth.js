@@ -11,6 +11,8 @@ function verifyToken(req, res, next){
     try {
         let decoded = jwt.verify(token, privKey);
         req.userID = decoded.userID;
+        req.name = decoded.name;
+        req.isTeacher = decoded.isTeacher;
         next();
     } catch(err) {
         res.redirect('/auth/login');
